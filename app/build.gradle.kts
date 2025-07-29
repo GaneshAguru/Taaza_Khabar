@@ -116,6 +116,9 @@ dependencies {
     // Material Icons Extended
     implementation(libs.androidx.material.icons.extended)
 
+    // Compose Animation
+    implementation(libs.androidx.compose.animation)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
