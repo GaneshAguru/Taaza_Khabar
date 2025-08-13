@@ -116,6 +116,20 @@ dependencies {
     // Material Icons Extended
     implementation(libs.androidx.material.icons.extended)
 
+    // Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    // Razorpay
+    implementation("com.razorpay:checkout:1.6.38")
+    
+    // WebView
+    implementation("androidx.webkit:webkit:1.11.0")
+    
+    // Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Background gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="135"
+                android:startColor="#E3F2FD"
+                android:centerColor="#BBDEFB"
+                android:endColor="#2196F3"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Centered splash icon with increased size -->
+    <item
+        android:drawable="@drawable/ic_splash_icon"
+        android:gravity="center" />
+        
+</layer-list> 

@@ -12,12 +12,14 @@ interface NewsApiService {
     suspend fun getTopHeadlines(
         @Query("country") country: String = "us",
         @Query("category") category: String,
+        @Query("language") language: String = "en",
         @Query("apiKey") apiKey: String
     ): Response<NewsResponse>
 
     @GET("everything")
     suspend fun searchNews(
         @Query("q") query: String,
+        @Query("language") language: String = "en",
         @Query("apiKey") apiKey: String,
         @Query("sortBy") sortBy: String = "publishedAt",
         @Query("pageSize") pageSize: Int = 20

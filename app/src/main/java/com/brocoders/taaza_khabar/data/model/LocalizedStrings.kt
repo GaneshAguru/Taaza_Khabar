@@ -1,0 +1,285 @@
+package com.brocoders.taaza_khabar.data.model
+
+object LocalizedStrings {
+    
+    fun getStrings(languageCode: String): Map<String, String> {
+        return when (languageCode) {
+            "es" -> spanishStrings
+            "fr" -> frenchStrings
+            "de" -> germanStrings
+            "it" -> italianStrings
+            "pt" -> portugueseStrings
+            "ru" -> russianStrings
+            "zh" -> chineseStrings
+            "ar" -> arabicStrings
+            "nl" -> dutchStrings
+            "sv" -> swedishStrings
+            "no" -> norwegianStrings
+            "he" -> hebrewStrings
+            "ud" -> urduStrings
+            else -> englishStrings // Default to English
+        }
+    }
+    
+    private val englishStrings = mapOf(
+        "app_name" to "Taaza Khabar",
+        "search_news" to "Search News",
+        "search_placeholder" to "Search for news...",
+        "search_button" to "Search",
+        "no_articles_found" to "No articles found for",
+        "choose_language" to "Choose Language",
+        "current_language" to "Current Language",
+        "available_languages" to "Available Languages",
+        "loading" to "Loading...",
+        "searching" to "Searching...",
+        "error_occurred" to "An error occurred",
+        "try_again" to "Try Again",
+        "news_detail" to "News Detail",
+        "read_full_article" to "Read Full Article",
+        "subscribe_now" to "Subscribe Now",
+        "premium_subscription" to "Premium Subscription",
+        "get_premium_access" to "Get Premium Access",
+        "subscribe_for_full_article" to "Subscribe for Full Article",
+        "premium_article" to "🌟 Read Full Article (Premium)",
+        "subscribe_description" to "Subscribe to read full articles in WebView with no ads",
+        "weekly_premium" to "Weekly Premium",
+        "monthly_premium" to "Monthly Premium",
+        "yearly_premium" to "Yearly Premium",
+        "best_value" to "BEST VALUE",
+        "choose_plan" to "Choose Your Plan",
+        "processing" to "Processing...",
+        "select_plan" to "Select a Plan",
+        "subscribe_for" to "Subscribe for",
+        "terms_text" to "By subscribing, you agree to our Terms of Service and Privacy Policy. Subscription will auto-renew unless cancelled.",
+        "loading_premium_content" to "Loading premium content...",
+        "share" to "Share",
+        "back" to "Back",
+        "close" to "Close",
+        "menu" to "Menu",
+        "recent" to "Recent",
+        "confirm_payment" to "Confirm Payment",
+        "continue_payment" to "Continue to Payment",
+        "swipe_up" to "Swipe up for next article",
+        "loading_news" to "Loading news...",
+        "please_wait" to "Please wait",
+        "error_loading_news" to "Error loading news",
+        "no_news" to "No News",
+        "try_different_category" to "Try a different category or refresh",
+        "refresh" to "Refresh",
+        "news_flip" to "News Flip",
+        "of" to "of",
+        "tap_to_flip" to "📱 Tap to flip",
+        "welcome_title" to "Welcome to Taaza Khabar",
+        "welcome_subtitle" to "Stay Informed. Stay Ahead.",
+        "browse_categories" to "Browse Categories",
+        "error" to "Error",
+        "read_more" to "Read More",
+        "breaking_news" to "BREAKING NEWS",
+        "full_article_available" to "Full article available",
+        "tap_to_read_more" to "Tap 'Read More' to view the complete story and detailed information",
+        "read_more_at" to "Read more at",
+        "read_full_article" to "Read Full Article",
+        "settings" to "Settings",
+        "theme" to "Theme",
+        "dark_mode" to "Dark Mode",
+        "light_mode" to "Light Mode",
+        "swipe_up" to "Swipe up for next article",
+        // Text-to-Speech related strings
+        "voice_assistant" to "Voice Assistant",
+        "listen_to_article" to "Listen to Article",
+        "listen" to "Listen",
+        "reading" to "Reading...",
+        "reading_article" to "Reading article...",
+        "stop_reading" to "Stop reading article",
+        "stop" to "Stop",
+        "paused" to "Paused",
+        "tts_error" to "Error occurred",
+        "ready_to_read" to "Ready to read article",
+        "initializing" to "Initializing...",
+        "now_reading" to "Now reading...",
+        "accessibility_feature" to "Accessibility feature for visually impaired users",
+        // Bookmark related strings
+        "my_bookmarks" to "My Bookmarks",
+        "saved_articles" to "View saved articles",
+        "bookmark_added" to "Article bookmarked",
+        "bookmark_removed" to "Bookmark removed",
+        "no_bookmarks" to "No Bookmarks Yet",
+        "no_bookmarks_description" to "Start bookmarking articles to see them here",
+        "clear_all_bookmarks" to "Clear all bookmarks"
+    )
+    
+    private val spanishStrings = mapOf(
+        "app_name" to "Centro de Noticias",
+        "search_news" to "Buscar Noticias",
+        "search_placeholder" to "Buscar noticias...",
+        "search_button" to "Buscar",
+        "no_articles_found" to "No se encontraron artículos para",
+        "choose_language" to "Elegir Idioma",
+        "current_language" to "Idioma Actual",
+        "available_languages" to "Idiomas Disponibles",
+        "loading" to "Cargando...",
+        "searching" to "Buscando...",
+        "error_occurred" to "Ocurrió un error",
+        "try_again" to "Intentar de Nuevo",
+        "news_detail" to "Detalle de Noticia",
+        "read_full_article" to "Leer Artículo Completo",
+        "subscribe_now" to "Suscribirse Ahora",
+        "premium_subscription" to "Suscripción Premium",
+        "get_premium_access" to "Obtener Acceso Premium",
+        "subscribe_for_full_article" to "Suscribirse para Artículo Completo",
+        "premium_article" to "🌟 Leer Artículo Completo (Premium)",
+        "subscribe_description" to "Suscríbete para leer artículos completos en WebView sin anuncios",
+        "weekly_premium" to "Premium Semanal",
+        "monthly_premium" to "Premium Mensual",
+        "yearly_premium" to "Premium Anual",
+        "best_value" to "MEJOR VALOR",
+        "choose_plan" to "Elige Tu Plan",
+        "processing" to "Procesando...",
+        "select_plan" to "Seleccionar Plan",
+        "subscribe_for" to "Suscribirse por",
+        "terms_text" to "Al suscribirte, aceptas nuestros Términos de Servicio y Política de Privacidad.",
+        "loading_premium_content" to "Cargando contenido premium...",
+        "share" to "Compartir",
+        "back" to "Atrás",
+        "close" to "Cerrar",
+        "menu" to "Menú",
+        "recent" to "Reciente",
+        "confirm_payment" to "Confirmar Pago",
+        "continue_payment" to "Continuar al Pago",
+        "swipe_up" to "Desliza hacia arriba para el siguiente artículo"
+    )
+    
+    private val frenchStrings = mapOf(
+        "app_name" to "Centre d'Actualités",
+        "search_news" to "Rechercher des Actualités",
+        "search_placeholder" to "Rechercher des actualités...",
+        "search_button" to "Rechercher",
+        "no_articles_found" to "Aucun article trouvé pour",
+        "choose_language" to "Choisir la Langue",
+        "current_language" to "Langue Actuelle",
+        "available_languages" to "Langues Disponibles",
+        "loading" to "Chargement...",
+        "searching" to "Recherche...",
+        "error_occurred" to "Une erreur s'est produite",
+        "try_again" to "Réessayer",
+        "news_detail" to "Détail de l'Actualité",
+        "read_full_article" to "Lire l'Article Complet",
+        "subscribe_now" to "S'abonner Maintenant",
+        "premium_subscription" to "Abonnement Premium",
+        "get_premium_access" to "Obtenir l'Accès Premium",
+        "subscribe_for_full_article" to "S'abonner pour l'Article Complet",
+        "premium_article" to "🌟 Lire l'Article Complet (Premium)",
+        "subscribe_description" to "Abonnez-vous pour lire des articles complets en WebView sans publicités",
+        "weekly_premium" to "Premium Hebdomadaire",
+        "monthly_premium" to "Premium Mensuel",
+        "yearly_premium" to "Premium Annuel",
+        "best_value" to "MEILLEURE VALEUR",
+        "choose_plan" to "Choisissez Votre Plan",
+        "processing" to "Traitement...",
+        "select_plan" to "Sélectionner un Plan",
+        "subscribe_for" to "S'abonner pour",
+        "terms_text" to "En vous abonnant, vous acceptez nos Conditions de Service et Politique de Confidentialité.",
+        "loading_premium_content" to "Chargement du contenu premium...",
+        "share" to "Partager",
+        "back" to "Retour",
+        "close" to "Fermer",
+        "menu" to "Menu",
+        "recent" to "Récent",
+        "confirm_payment" to "Confirmer le Paiement",
+        "continue_payment" to "Continuer vers le Paiement",
+        "swipe_up" to "Balayez vers le haut pour l'article suivant"
+    )
+    
+    private val germanStrings = mapOf(
+        "app_name" to "Nachrichten-Hub",
+        "search_news" to "Nachrichten Suchen",
+        "search_placeholder" to "Nach Nachrichten suchen...",
+        "search_button" to "Suchen",
+        "no_articles_found" to "Keine Artikel gefunden für",
+        "choose_language" to "Sprache Wählen",
+        "current_language" to "Aktuelle Sprache",
+        "available_languages" to "Verfügbare Sprachen",
+        "loading" to "Laden...",
+        "searching" to "Suchen...",
+        "error_occurred" to "Ein Fehler ist aufgetreten",
+        "try_again" to "Erneut Versuchen",
+        "news_detail" to "Nachrichten-Detail",
+        "read_full_article" to "Vollständigen Artikel Lesen",
+        "subscribe_now" to "Jetzt Abonnieren",
+        "premium_subscription" to "Premium-Abonnement",
+        "get_premium_access" to "Premium-Zugang Erhalten",
+        "subscribe_for_full_article" to "Für Vollständigen Artikel Abonnieren",
+        "premium_article" to "🌟 Vollständigen Artikel Lesen (Premium)",
+        "subscribe_description" to "Abonnieren Sie, um vollständige Artikel in WebView ohne Werbung zu lesen",
+        "weekly_premium" to "Wöchentliches Premium",
+        "monthly_premium" to "Monatliches Premium",
+        "yearly_premium" to "Jährliches Premium",
+        "best_value" to "BESTER WERT",
+        "choose_plan" to "Wählen Sie Ihren Plan",
+        "processing" to "Verarbeitung...",
+        "select_plan" to "Plan Auswählen",
+        "subscribe_for" to "Abonnieren für",
+        "terms_text" to "Durch das Abonnieren stimmen Sie unseren Nutzungsbedingungen und Datenschutzrichtlinien zu.",
+        "loading_premium_content" to "Premium-Inhalte werden geladen...",
+        "share" to "Teilen",
+        "back" to "Zurück",
+        "close" to "Schließen",
+        "menu" to "Menü",
+        "recent" to "Neueste",
+        "confirm_payment" to "Zahlung Bestätigen",
+        "continue_payment" to "Zur Zahlung Fortfahren",
+        "swipe_up" to "Nach oben wischen für nächsten Artikel"
+    )
+    
+    private val italianStrings = mapOf(
+        "app_name" to "Centro Notizie",
+        "search_news" to "Cerca Notizie",
+        "search_placeholder" to "Cerca notizie...",
+        "search_button" to "Cerca",
+        "no_articles_found" to "Nessun articolo trovato per",
+        "choose_language" to "Scegli Lingua",
+        "current_language" to "Lingua Attuale",
+        "available_languages" to "Lingue Disponibili",
+        "loading" to "Caricamento...",
+        "searching" to "Cercando...",
+        "error_occurred" to "Si è verificato un errore",
+        "try_again" to "Riprova",
+        "news_detail" to "Dettaglio Notizia",
+        "read_full_article" to "Leggi Articolo Completo",
+        "subscribe_now" to "Abbonati Ora",
+        "premium_subscription" to "Abbonamento Premium",
+        "get_premium_access" to "Ottieni Accesso Premium",
+        "subscribe_for_full_article" to "Abbonati per Articolo Completo",
+        "premium_article" to "🌟 Leggi Articolo Completo (Premium)",
+        "subscribe_description" to "Abbonati per leggere articoli completi in WebView senza pubblicità",
+        "weekly_premium" to "Premium Settimanale",
+        "monthly_premium" to "Premium Mensile",
+        "yearly_premium" to "Premium Annuale",
+        "best_value" to "MIGLIOR VALORE",
+        "choose_plan" to "Scegli Il Tuo Piano",
+        "processing" to "Elaborazione...",
+        "select_plan" to "Seleziona Piano",
+        "subscribe_for" to "Abbonati per",
+        "terms_text" to "Abbonandoti, accetti i nostri Termini di Servizio e Informativa sulla Privacy.",
+        "loading_premium_content" to "Caricamento contenuto premium...",
+        "share" to "Condividi",
+        "back" to "Indietro",
+        "close" to "Chiudi",
+        "menu" to "Menu",
+        "recent" to "Recente",
+        "confirm_payment" to "Conferma Pagamento",
+        "continue_payment" to "Continua al Pagamento",
+        "swipe_up" to "Scorri verso l'alto per l'articolo successivo"
+    )
+    
+    // Add other languages with basic translations
+    private val portugueseStrings = englishStrings // Simplified for now
+    private val russianStrings = englishStrings
+    private val chineseStrings = englishStrings
+    private val arabicStrings = englishStrings
+    private val dutchStrings = englishStrings
+    private val swedishStrings = englishStrings
+    private val norwegianStrings = englishStrings
+    private val hebrewStrings = englishStrings
+    private val urduStrings = englishStrings
+} 

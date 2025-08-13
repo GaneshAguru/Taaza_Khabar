@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Background Circle with gradient effect -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,100m-90,0a90,90 0,1 1,180 0a90,90 0,1 1,-180 0" />
+    
+    <!-- Inner circle for depth -->
+    <path
+        android:fillColor="#1976D2"
+        android:pathData="M100,100m-75,0a75,75 0,1 1,150 0a75,75 0,1 1,-150 0" />
+    
+    <!-- News icon - Modern newspaper design -->
+    <!-- Header line -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M55,65h90v4H55V65z" />
+    
+    <!-- Main headline -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M55,80h70v6H55V80z" />
+    
+    <!-- Article lines -->
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M55,95h85v3H55V95z" />
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M55,105h60v3H55V105z" />
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M55,115h75v3H55V115z" />
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M55,125h50v3H55V125z" />
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M55,135h65v3H55V135z" />
+    
+    <!-- Modern accent element - notification dot -->
+    <path
+        android:fillColor="#FF4444"
+        android:pathData="M135,75m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+    
+    <!-- Breaking news indicator -->
+    <path
+        android:fillColor="#FF4444"
+        android:pathData="M125,90h15v3H125V90z" />
+    
+</vector> 

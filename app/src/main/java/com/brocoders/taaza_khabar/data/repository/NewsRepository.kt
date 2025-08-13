@@ -25,11 +25,12 @@ class NewsRepository @Inject constructor(
         return articlesCache[url]
     }
 
-    fun getTopHeadlines(category: String): Flow<Resource<List<Article>>> = flow {
+    fun getTopHeadlines(category: String, language: String = "en"): Flow<Resource<List<Article>>> = flow {
         try {
             emit(Resource.Loading())
             val response = newsApiService.getTopHeadlines(
                 category = category,
+                language = language,
                 apiKey = NewsApiService.API_KEY
             )
 
@@ -49,11 +50,12 @@ class NewsRepository @Inject constructor(
         }
     }
 
-    fun searchNews(query: String): Flow<Resource<List<Article>>> = flow {
+    fun searchNews(query: String, language: String = "en"): Flow<Resource<List<Article>>> = flow {
         try {
             emit(Resource.Loading())
             val response = newsApiService.searchNews(
                 query = query,
+                language = language,
                 apiKey = NewsApiService.API_KEY
             )
 

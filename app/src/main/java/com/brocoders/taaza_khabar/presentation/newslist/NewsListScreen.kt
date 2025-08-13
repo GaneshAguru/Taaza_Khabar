@@ -4,9 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +24,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.brocoders.taaza_khabar.data.model.Article
 import com.brocoders.taaza_khabar.data.model.NewsCategory
-import com.brocoders.taaza_khabar.presentation.home.HomeViewModel
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,12 +35,13 @@ fun NewsListScreen(
     onBackClick: () -> Unit,
     onArticleClick: (Article) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: NewsListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val bookmarkStates by viewModel.bookmarkStates.collectAsStateWithLifecycle()
 
     LaunchedEffect(category) {
-        viewModel.onCategoryClick(category)
+        viewModel.loadNews(category)
     }
 
     Column(
@@ -111,7 +114,7 @@ fun NewsListScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
-                            onClick = { viewModel.onCategoryClick(category) }
+                            onClick = { viewModel.loadNews(category) }
                         ) {
                             Text("Retry")
                         }
@@ -141,7 +144,9 @@ fun NewsListScreen(
                     items(uiState.articles) { article ->
                         NewsArticleCard(
                             article = article,
-                            onClick = { onArticleClick(article) }
+                            onClick = { onArticleClick(article) },
+                            onBookmarkClick = { viewModel.toggleBookmark(it) },
+                            isBookmarked = bookmarkStates[article.url] ?: false
                         )
                     }
                 }
@@ -154,6 +159,8 @@ fun NewsListScreen(
 fun NewsArticleCard(
     article: Article,
     onClick: () -> Unit,
+    onBookmarkClick: (Article) -> Unit = {},
+    isBookmarked: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -166,19 +173,45 @@ fun NewsArticleCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Article Image
-            article.urlToImage?.let { imageUrl ->
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Article Image",
+            // Article Image with Bookmark Overlay
+            Box {
+                article.urlToImage?.let { imageUrl ->
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = "Article Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                
+                // Bookmark Icon
+                Surface(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(32.dp),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                    shadowElevation = 4.dp
+                ) {
+                    IconButton(
+                        onClick = { onBookmarkClick(article) },
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = if (isBookmarked) "Remove bookmark" else "Add bookmark",
+                            tint = if (isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
             }
+            
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Article Title
             Text(

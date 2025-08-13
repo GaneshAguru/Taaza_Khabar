@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="180dp"
+    android:height="180dp"
+    android:viewportWidth="180"
+    android:viewportHeight="180">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M90,90m-80,0a80,80 0,1 1,160 0a80,80 0,1 1,-160 0" />
+    
+    <!-- News icon symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,50h90v8H45V50z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,70h60v6H45V70z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,85h75v6H45V85z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,100h50v6H45V100z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,115h65v6H45V115z" />
+    
+    <!-- News paper corner fold -->
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M110,70L125,70L125,85z" />
+</vector> 

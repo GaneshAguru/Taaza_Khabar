@@ -1,5 +1,6 @@
 package com.brocoders.taaza_khabar.presentation.detail
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -7,7 +8,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +26,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.brocoders.taaza_khabar.data.model.Article
+import com.brocoders.taaza_khabar.data.repository.BookmarkRepository
+import com.brocoders.taaza_khabar.data.service.TextToSpeechManager
+import com.brocoders.taaza_khabar.presentation.components.SubscriptionDialog
+import com.brocoders.taaza_khabar.presentation.components.TTSControls
+import com.brocoders.taaza_khabar.presentation.home.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,16 +39,38 @@ import java.util.*
 fun NewsDetailScreen(
     articleUrl: String?,
     onBackClick: () -> Unit,
+    onOpenWebView: (String, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
     viewModel: NewsDetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showSubscriptionDialog by remember { mutableStateOf(false) }
+    var isSubscribed by remember { mutableStateOf(false) }
+    
+    // Bookmark functionality
+    val isBookmarked by viewModel.isBookmarked.collectAsStateWithLifecycle()
+    
+    // Create TTS manager
+    val ttsManager = remember { TextToSpeechManager(context.applicationContext) }
+    
+    // Cleanup TTS when screen is disposed
+    DisposableEffect(Unit) {
+        onDispose {
+            ttsManager.shutdown()
+        }
+    }
+    
+    // Get localized strings from HomeViewModel (assuming we need language context)
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val localizedStrings by homeViewModel.localizedStrings.collectAsStateWithLifecycle()
 
     LaunchedEffect(articleUrl) {
         articleUrl?.let { url ->
             viewModel.loadArticleByUrl(url)
         }
+        // Check subscription status
+        isSubscribed = viewModel.paymentService.isSubscriptionActive()
     }
 
     Column(
@@ -49,7 +80,7 @@ fun NewsDetailScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "News Detail",
+                    text = localizedStrings["news_detail"] ?: "News Detail",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -58,12 +89,26 @@ fun NewsDetailScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = localizedStrings["back"] ?: "Back"
                     )
                 }
             },
             actions = {
                 uiState.article?.let { article ->
+                    // Bookmark button
+                    IconButton(
+                        onClick = {
+                            viewModel.toggleBookmark()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                            contentDescription = if (isBookmarked) "Remove bookmark" else "Add bookmark",
+                            tint = if (isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    
+                    // Share button
                     IconButton(
                         onClick = {
                             val shareIntent = Intent().apply {
@@ -79,8 +124,8 @@ fun NewsDetailScreen(
                         }
                     ) {
                         Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = "Share",
+                            imageVector = Icons.Default.Share,
+                            contentDescription = localizedStrings["share"] ?: "Share",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -116,6 +161,17 @@ fun NewsDetailScreen(
             uiState.article != null -> {
                 ArticleContent(
                     article = uiState.article!!,
+                    isSubscribed = isSubscribed,
+                    localizedStrings = localizedStrings,
+                    ttsManager = ttsManager,
+                    onSubscribeClick = { showSubscriptionDialog = true },
+                    onReadFullArticle = { article ->
+                        if (isSubscribed) {
+                            onOpenWebView(article.url, article.title)
+                        } else {
+                            showSubscriptionDialog = true
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
@@ -123,12 +179,29 @@ fun NewsDetailScreen(
                 )
             }
         }
+        
+        // Subscription Dialog
+        if (showSubscriptionDialog) {
+            SubscriptionDialog(
+                onDismiss = { showSubscriptionDialog = false },
+                onSubscriptionSuccess = {
+                    isSubscribed = true
+                    showSubscriptionDialog = false
+                },
+                localizedStrings = localizedStrings
+            )
+        }
     }
 }
 
 @Composable
 private fun ArticleContent(
     article: Article,
+    isSubscribed: Boolean,
+    localizedStrings: Map<String, String>,
+    ttsManager: TextToSpeechManager,
+    onSubscribeClick: () -> Unit,
+    onReadFullArticle: (Article) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -221,24 +294,108 @@ private fun ArticleContent(
                 )
             }
 
-            // Read Full Article Button
-            OutlinedButton(
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = android.net.Uri.parse(article.url)
+            // TTS Controls for Accessibility
+            TTSControls(
+                ttsManager = ttsManager,
+                articleTitle = article.title,
+                articleDescription = article.description,
+                articleContent = article.content?.replace("[+\\d+ chars]".toRegex(), ""),
+                localizedStrings = localizedStrings,
+                isCompact = false,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Subscription Banner (if not subscribed)
+            if (!isSubscribed) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = localizedStrings["get_premium_access"] ?: "Get Premium Access",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Text(
+                            text = localizedStrings["subscribe_description"] ?: "Subscribe to read full articles in WebView with no ads",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(
+                            onClick = onSubscribeClick,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(localizedStrings["subscribe_now"] ?: "Subscribe Now")
+                        }
                     }
-                    context.startActivity(intent)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = "Read Full Article",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium
-                )
+                }
+            }
+
+            // Read Full Article Button
+            if (isSubscribed) {
+                Button(
+                    onClick = { onReadFullArticle(article) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(
+                        text = localizedStrings["premium_article"] ?: "🌟 Read Full Article (Premium)",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onSubscribeClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = localizedStrings["subscribe_for_full_article"] ?: "Subscribe for Full Article",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
 
             // Bottom Spacing

@@ -3,6 +3,9 @@ package com.brocoders.taaza_khabar.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.brocoders.taaza_khabar.data.model.Article
+import com.brocoders.taaza_khabar.data.model.Language
+import com.brocoders.taaza_khabar.data.model.LanguageData
+import com.brocoders.taaza_khabar.data.model.LocalizedStrings
 import com.brocoders.taaza_khabar.data.model.NewsCategory
 import com.brocoders.taaza_khabar.data.model.NewsCategoryData
 import com.brocoders.taaza_khabar.data.repository.NewsRepository
@@ -26,8 +29,18 @@ class HomeViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    private val _selectedLanguage = MutableStateFlow(LanguageData.getDefaultLanguage())
+    val selectedLanguage: StateFlow<Language> = _selectedLanguage.asStateFlow()
+
+    private val _localizedStrings = MutableStateFlow(LocalizedStrings.getStrings("en"))
+    val localizedStrings: StateFlow<Map<String, String>> = _localizedStrings.asStateFlow()
+    
+    private var currentCategoryParam: String = "general" // Track current category
+
     init {
         loadCategories()
+        // Load default news
+        loadNewsByCategory(currentCategoryParam)
     }
 
     private fun loadCategories() {
@@ -38,12 +51,36 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onCategoryClick(category: NewsCategory) {
-        loadNewsForCategory(category.apiParam)
+        currentCategoryParam = category.apiParam
+        loadNewsByCategory(category.apiParam)
     }
 
-    private fun loadNewsForCategory(category: String) {
+    fun onLanguageSelected(language: Language) {
+        _selectedLanguage.value = language
+        _localizedStrings.value = LocalizedStrings.getStrings(language.code)
+        
+        // Save language preference
+        // TODO: Add SharedPreferences to save language preference
+        
+        // Reload current data with new language
+        loadNewsByCategory(currentCategoryParam)
+        
+        // Also reload search results if there are any
+        val currentSearchQuery = _searchQuery.value
+        if (currentSearchQuery.isNotBlank()) {
+            // TODO: Implement search reload with new language
+        }
+    }
+    
+    // Public method to load news for flip screen
+    fun loadNewsForCategory(categoryParam: String) {
+        currentCategoryParam = categoryParam
+        loadNewsByCategory(categoryParam)
+    }
+
+    private fun loadNewsByCategory(category: String) {
         viewModelScope.launch {
-            newsRepository.getTopHeadlines(category).collect { resource ->
+            newsRepository.getTopHeadlines(category, _selectedLanguage.value.code).collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -74,7 +111,7 @@ class HomeViewModel @Inject constructor(
         val query = _searchQuery.value.trim()
         if (query.isNotEmpty()) {
             viewModelScope.launch {
-                newsRepository.searchNews(query).collect { resource ->
+                newsRepository.searchNews(query, _selectedLanguage.value.code).collect { resource ->
                     when (resource) {
                         is Resource.Loading -> {
                             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -101,6 +138,12 @@ class HomeViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+    
+
 }
 
 data class HomeUiState(

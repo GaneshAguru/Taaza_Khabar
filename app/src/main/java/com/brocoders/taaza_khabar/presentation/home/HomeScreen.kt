@@ -14,44 +14,81 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.Image
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.brocoders.taaza_khabar.data.model.NewsCategory
+import com.brocoders.taaza_khabar.presentation.components.NewsNavigationDrawer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onCategoryClick: (NewsCategory) -> Unit,
     onSearchClick: () -> Unit,
+    onBookmarksClick: () -> Unit = {},
+    isDarkMode: Boolean = false,
+    onToggleDarkMode: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
+    val localizedStrings by viewModel.localizedStrings.collectAsStateWithLifecycle()
+    
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = modifier.fillMaxSize()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            NewsNavigationDrawer(
+                selectedLanguage = selectedLanguage,
+                localizedStrings = localizedStrings,
+                onLanguageSelected = { language ->
+                    viewModel.onLanguageSelected(language)
+                },
+                onCloseDrawer = {
+                    scope.launch { drawerState.close() }
+                },
+                onBookmarksClick = onBookmarksClick,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = onToggleDarkMode
+            )
+        },
+        modifier = modifier
     ) {
-        // Top App Bar
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Top App Bar
         CenterAlignedTopAppBar(
             title = {
                 Text(
-                    text = "News Hub",
+                    text = localizedStrings["app_name"] ?: "News Hub",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             },
             navigationIcon = {
-                IconButton(onClick = { /* TODO: Handle menu click */ }) {
+                IconButton(
+                    onClick = {
+                        scope.launch { drawerState.open() }
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Menu",
+                        contentDescription = localizedStrings["menu"] ?: "Menu",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -60,7 +97,7 @@ fun HomeScreen(
                 IconButton(onClick = onSearchClick) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
+                        contentDescription = localizedStrings["search_news"] ?: "Search",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -88,7 +125,7 @@ fun HomeScreen(
             ) {
                 // Welcome Section
                 Text(
-                    text = "Welcome to News Hub",
+                    text = localizedStrings["welcome_title"] ?: "Welcome to Taaza Khabar",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -96,7 +133,7 @@ fun HomeScreen(
                 )
 
                 Text(
-                    text = "Stay updated with the latest news across different categories",
+                    text = localizedStrings["welcome_subtitle"] ?: "Stay Informed. Stay Ahead.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -104,7 +141,7 @@ fun HomeScreen(
 
                 // Categories Grid
                 Text(
-                    text = "Browse Categories",
+                    text = localizedStrings["browse_categories"] ?: "Browse Categories",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -136,6 +173,7 @@ fun HomeScreen(
                 // Show snackbar or handle error
             }
         }
+        }
     }
 }
 
@@ -148,7 +186,7 @@ fun CategoryCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(160.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -171,21 +209,33 @@ fun CategoryCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    imageVector = category.icon,
-                    contentDescription = category.name,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                // Custom category image card that fills most of the space
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .aspectRatio(1f),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = category.iconRes),
+                        contentDescription = category.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Category name below the card
                 Text(
                     text = category.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

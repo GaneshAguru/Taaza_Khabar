@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main app theme -->
     <style name="Theme.Taaza_Khabar" parent="android:Theme.Material.Light.NoActionBar" />
+    
+    <!-- Splash screen theme with increased icon dimensions -->
+    <style name="Theme.Taaza_Khabar.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_icon</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.Taaza_Khabar</item>
+    </style>
+    
+    <!-- Legacy splash screen theme for older Android versions -->
+    <style name="Theme.Taaza_Khabar.SplashScreen.Legacy" parent="Theme.Taaza_Khabar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
 </resources>

@@ -1,9 +1,13 @@
 package com.brocoders.taaza_khabar.di
 
+import android.content.Context
 import com.brocoders.taaza_khabar.data.api.NewsApiService
+import com.brocoders.taaza_khabar.data.service.PaymentService
+import com.brocoders.taaza_khabar.data.service.TextToSpeechManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -45,5 +49,17 @@ object NetworkModule {
     @Singleton
     fun provideNewsApiService(retrofit: Retrofit): NewsApiService {
         return retrofit.create(NewsApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providePaymentService(@ApplicationContext context: Context): PaymentService {
+        return PaymentService(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTextToSpeechManager(@ApplicationContext context: Context): TextToSpeechManager {
+        return TextToSpeechManager(context)
     }
 }
