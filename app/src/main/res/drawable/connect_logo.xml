@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M100,20 A80,80 0 1,1 100,180 A80,80 0 1,1 100,20 Z" />
+    
+    <!-- Connect Symbol - Two circles connected -->
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="75"
+        android:cy="100"
+        android:radius="15" />
+        
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="125"
+        android:cy="100"
+        android:radius="15" />
+    
+    <!-- Connection Line -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:pathData="M90,100 L110,100" />
+    
+    <!-- Text -->
+    <text
+        android:x="100"
+        android:y="140"
+        android:text="CONNECT"
+        android:textSize="16"
+        android:textColor="#FFFFFF"
+        android:textAlign="center"
+        android:fontFamily="sans-serif-medium" />
+</vector>
