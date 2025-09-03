@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M60,10 A50,50 0 1,1 60,110 A50,50 0 1,1 60,10 Z" />
+    
+    <!-- Connect Symbol - Two nodes -->
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="45"
+        android:cy="60"
+        android:radius="8" />
+        
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="75"
+        android:cy="60"
+        android:radius="8" />
+    
+    <!-- Connection Line -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M53,60 L67,60" />
+    
+    <!-- Additional connection nodes -->
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="35"
+        android:cy="45"
+        android:radius="4" />
+        
+    <circle
+        android:fillColor="#FFFFFF"
+        android:cx="85"
+        android:cy="75"
+        android:radius="4" />
+    
+    <!-- Connection lines to additional nodes -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M39,49 L41,56" />
+        
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M81,71 L79,64" />
+</vector>

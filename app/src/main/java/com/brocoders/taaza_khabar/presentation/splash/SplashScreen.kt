@@ -109,8 +109,8 @@ fun SplashScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.appicon),
-                        contentDescription = "App Logo",
+                        painter = painterResource(id = R.drawable.connect_logo),
+                        contentDescription = "Connect Logo",
                         modifier = Modifier.size(90.dp)
                     )
                 }
